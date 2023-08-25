@@ -12,7 +12,7 @@ class Listing(models.Model):
     description = models.TextField()
     category = models.CharField(max_length = 64)
     imageUrl = models.URLField()
-    startingBid = models.DecimalField(max_digits = 10, decimal_places = 2)
+    startingPrice = models.DecimalField(max_digits = 10, decimal_places = 2)
     currentBid = models.DecimalField(max_digits = 10, decimal_places = 2, null = True)
     active = models.BooleanField()
     seller = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "listings", null = True)

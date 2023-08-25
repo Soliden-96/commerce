@@ -9,6 +9,7 @@ from django import forms
 from .models import User
 
 categories = [
+    (None,"Category"),
     ("Rock","Rock"),
     ("Pop","Pop"),
     ("Jazz","Jazz"),
@@ -19,8 +20,8 @@ class createListingForm(forms.Form):
     title = forms.CharField(widget=forms.TextInput(attrs={'placeholder':'Title'}))
     description = forms.CharField(widget=forms.Textarea(attrs={'placeholder':'Provide a brief description of the article'}))
     category = forms.ChoiceField(choices=categories)
-    startingBid = forms.DecimalField(min_value=0, decimal_places=2, max_digits=10)
-    imageUrls = forms.URLField()
+    startingPrice = forms.DecimalField(min_value=0, decimal_places=2, max_digits=10, widget=forms.NumberInput(attrs={'placeholder':'Starting Price'}))
+    imageUrls = forms.URLField(widget=forms.URLInput(attrs={'placeholder':'Provide Url for an image'}))
 
 
 def index(request):
