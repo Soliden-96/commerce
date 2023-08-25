@@ -8,13 +8,19 @@ from django import forms
 
 from .models import User
 
-categories = ["Rock","Pop","Jazz","HipHop/RnB","Electronic/Dance"]
+categories = [
+    ("Rock","Rock"),
+    ("Pop","Pop"),
+    ("Jazz","Jazz"),
+    ("HipHop/RnB","HipHop/RnB"),
+    ("Electronic/Dance","Electronic/Dance")
+    ]
 class createListingForm(forms.Form):
-    title = forms.CharField(attrs={'placeholder':'Title'})
-    description = forms.CharField(widget=forms.TextArea(attrs={'placeholder':'Provide a brief description of the article'}))
+    title = forms.CharField(widget=forms.TextInput(attrs={'placeholder':'Title'}))
+    description = forms.CharField(widget=forms.Textarea(attrs={'placeholder':'Provide a brief description of the article'}))
     category = forms.ChoiceField(choices=categories)
     startingBid = forms.DecimalField(min_value=0, decimal_places=2, max_digits=10)
-    imageUrls = forms.UrlField()
+    imageUrls = forms.URLField()
 
 
 def index(request):
@@ -75,9 +81,8 @@ def register(request):
 
 @login_required
 def createListing(request):
-    if request.method == "POST":
-        
-   
+
+    form = createListingForm(request.POST)
     return render(request,"auctions/createListings.html",{
-        "categories":categories
+        "categories":categories, "form":form
     })
