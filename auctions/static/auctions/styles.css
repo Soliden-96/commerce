@@ -1,3 +1,7 @@
 body {
     padding: 10px;
 }
+
+.index-img{
+    inline-size:300px;
+}

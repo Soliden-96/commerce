@@ -2,6 +2,33 @@
 
 {% block body %}
     <h2>Active Listings</h2>
+    <div>
+        {% for listing in listings %}
+            <h4>{{ listing.title }} by {{ listing.artist }}</h4>
+            <div>Genre: {{ listing.category }}</div>
+            <div>Listed by {{ listing.seller.username }}</div>
+            <div class="index-img">
+                <img class="img-fluid" src="{{ listing.imageUrl }}" alt="{{ listing.title }} by {{ listing.artist }}">
+            </div>
+            <div>{{ listing.description }}</div>
+            <div>
+            {% if not listing.currentBid %}
+             Current Price : {{ listing.startingPrice}}$
+             {% else %}
+             Current Price : {{ listing.currentBid }}
+             {% endif %}
+             </div>
+             <div>
+                <form action="placeBid" method="post">
+                    <input type="number" step="0.01" min="0">
+                    <div>
+                        <button type="submit">Place Bid</button>
+                    </div>
+                </form>                
+             </div>
+            {% endfor %}
 
-    TODO
+    </div>
+
+   
 {% endblock %}
