@@ -7,8 +7,8 @@
             <h4>{{ listing.title }} by {{ listing.artist }}</h4>
             <div>Genre: {{ listing.category }}</div>
             <div>Listed by {{ listing.seller.username }}</div>
-            <div class="index-img">
-                <img class="img-fluid" src="{{ listing.imageUrl }}" alt="{{ listing.title }} by {{ listing.artist }}">
+            <div>
+                <img src="{{ listing.imageUrl }}" alt="{{ listing.title }} by {{ listing.artist }}">
             </div>
             <div>{{ listing.description }}</div>
             <div>
