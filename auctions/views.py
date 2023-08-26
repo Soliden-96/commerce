@@ -6,7 +6,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django import forms
 
-from .models import User, Listing, Bid, Comment
+from .models import User, Listing, Bid, Comment, Watchlist
 
 categories = [
     (None,"Category"),
@@ -114,4 +114,14 @@ def createListing(request):
 
     return render(request,"auctions/createListings.html",{
         "categories":categories, "form":createListingForm()
+    })
+
+
+def listing(request,title):
+    
+    listing = Listing.objects.get(title=title)
+    comments = range(100)
+    
+    return render(request,"auctions/listing.html",{
+        "listing":listing, "comments":comments
     })

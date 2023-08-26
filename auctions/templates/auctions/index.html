@@ -2,10 +2,11 @@
 
 {% block body %}
     <h2>Active Listings</h2>
+    <hr>
     <div>
         {% for listing in listings %}
         <div>
-            <h4>{{ listing.title }} by {{ listing.artist }}</h4>
+            <h4><a href="{% url 'listing' listing.title %}">{{ listing.title }} by {{ listing.artist }}</a></h4>
             <div>Genre: {{ listing.category }}</div>
             <div>Listed by {{ listing.seller.username }}</div>
             <div style="height:20vh; width:20vh;">
@@ -13,21 +14,22 @@
             </div>
             <div>{{ listing.description }}</div>
             <div>
-            {% if not listing.currentBid %}
-             Current Price : {{ listing.startingPrice}}$
+             {% if not listing.currentBid %}
+             Starting Price : {{ listing.startingPrice}}$
              {% else %}
-             Current Price : {{ listing.currentBid }}
+             Current Price : {{ listing.currentBid }}$
              {% endif %}
              </div>
              <div>
                 <form action="placeBid" method="post">
-                    <input type="number" step="0.01" min="0">
+                    <input type="number" name="offer" step="0.01" min="0">
                     <div>
                         <button type="submit">Place Bid</button>
                     </div>
                 </form>                
              </div>
         </div>
+        <hr>
             {% endfor %}
 
     </div>

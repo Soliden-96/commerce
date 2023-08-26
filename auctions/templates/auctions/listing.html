@@ -1,0 +1,68 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h4>{{ listing.title }} by {{ listing.artist }}</h4>
+            <div>
+                <div>{{ listing.category }}</div>
+                <div>Listed by {{ listing.seller }}</div>
+                <div class="container mt-1">
+                    <div class="row">
+                        <div class="col" style="height:35vh; width:35vh;">
+                            <img src="{{ listing.imageUrl }}" alt="{{ listing.title }} by {{ listing.artist }}" style="width:35vh; height:35vh;" >
+                        </div>
+                        <div class="col">
+                            <div>
+                                {%if not listing.currentBid %}
+                                    Starting Price: {{ listing.startingPrice }}$
+                                {% else %}
+                                    Current Price: {{ listing.currentBid }}$
+                                {% endif %}   
+                            </div>
+                            <div>
+                                <form action="placeBid"  method="post">
+                                    <div>
+                                        <input type="number" name="offer" step="0.01" min="0">
+                                    </div>                          
+                                    <div class="mt-2">
+                                        <button type="submit">Place Bid</button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="mt-2">
+                                <form action="watchlist" method="post">
+                                    <input type="hidden" name="add">
+                                    <button type="submit">Add to Watchlist</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-1">{{ listing.description}}</div>
+                
+            </div>
+        </div>
+    
+    <div class="col">
+            <h4>Comment section</h4>
+            <div class="overflow-auto" style="height:30vh;">
+                {% for i in comments %}
+                    <div>
+                        <h6>Comment by User {{ i }}</h6>
+                        <p>This is the content of comment {{ i }}...</p>
+                    </div>
+                {% endfor %}            
+            </div>
+            <div class="mt-5">
+                <form action="comment" method="post">
+                    <textarea name="comment" placeholder="Leave a comment" style="width:100%;"></textarea>
+                    <div>
+                        <button type="submit">Comment</button>
+                    </div>
+                </form>
+            <div>
+    </div>
+</div>
+{% endblock %}
