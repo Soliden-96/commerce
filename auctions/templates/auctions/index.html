@@ -4,11 +4,12 @@
     <h2>Active Listings</h2>
     <div>
         {% for listing in listings %}
+        <div>
             <h4>{{ listing.title }} by {{ listing.artist }}</h4>
             <div>Genre: {{ listing.category }}</div>
             <div>Listed by {{ listing.seller.username }}</div>
-            <div>
-                <img src="{{ listing.imageUrl }}" alt="{{ listing.title }} by {{ listing.artist }}">
+            <div style="height:20vh; width:20vh;">
+                <img src="{{ listing.imageUrl }}" alt="{{ listing.title }} by {{ listing.artist }}" style="width:20vh; height:20vh;" >
             </div>
             <div>{{ listing.description }}</div>
             <div>
@@ -26,6 +27,7 @@
                     </div>
                 </form>                
              </div>
+        </div>
             {% endfor %}
 
     </div>
