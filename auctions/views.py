@@ -51,7 +51,7 @@ def login_view(request):
     else:
         return render(request, "auctions/login.html")
 
-
+@login_required
 def logout_view(request):
     logout(request)
     return HttpResponseRedirect(reverse("index"))
@@ -125,3 +125,17 @@ def listing(request,title):
     return render(request,"auctions/listing.html",{
         "listing":listing, "comments":comments
     })
+
+@login_required
+def addToWatchlist(request,title):
+    if request.method == "POST":
+        listing_id = request.POST["add"]
+        listing = Listing.objects.get(id=listing_id)
+        user = request.user
+        watchlist = Watchlist(watcher=user, watched=listing)
+        watchlist.save()
+        return HttpResponseRedirect(reverse("listing",args=[listing.title]))
+
+    return HttpResponseRedirect(reverse("index"))
+    
+

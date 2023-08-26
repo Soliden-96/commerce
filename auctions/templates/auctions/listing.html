@@ -23,6 +23,7 @@
                             </div>
                             <div>
                                 <form action="placeBid"  method="post">
+                                    {% csrf_token %}
                                     <div>
                                         <input type="number" name="offer" step="0.01" min="0">
                                     </div>                          
@@ -32,8 +33,9 @@
                                 </form>
                             </div>
                             <div class="mt-2">
-                                <form action="watchlist" method="post">
-                                    <input type="hidden" name="add">
+                                <form action="{% url 'addToWatchlist'  listing.title %}" method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="add" value="{{ listing.id }}">
                                     <button type="submit">Add to Watchlist</button>
                                 </form>
                             </div>
