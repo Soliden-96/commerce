@@ -31,27 +31,30 @@
                                         <button type="submit">Place Bid</button>
                                     </div>
                                 </form>
+                            </div>      
+                            {% if existing %}
+                            <div class="mt-2">
+                                <form action="{% url 'removeFromWatchlist' listing.id %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit">Remove from Watchlist</button>
+                                </form>
                             </div>
+                            {% else %}
                             <div class="mt-2">
                                 <form action="{% url 'addToWatchlist'  listing.id %}" method="post">
                                     {% csrf_token %}
                                     <button type="submit">Add to Watchlist</button>
                                 </form>
                             </div>
-                            {% if message %}
-                            <div class="mt-2">
-                                {{ message }}
-                            </div>
                             {% endif %}
                         </div>
                     </div>
                 </div>
-                <div class="mt-1">{{ listing.description}}</div>
-                
+                <div class="mt-1">{{ listing.description}}</div>         
             </div>
         </div>
     
-    <div class="col">
+        <div class="col">
             <h4>Comment section</h4>
             <div class="overflow-auto" style="height:30vh;">
                 {% for i in comments %}

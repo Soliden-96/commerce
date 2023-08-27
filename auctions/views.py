@@ -121,9 +121,15 @@ def listing(request,id):
     
     listing = Listing.objects.get(id=id)
     comments = range(100)
+    existing = None
+
+    if request.user:
+        user = request.user
+        if user.watchlist.filter(watched=listing).exists():
+            existing = True
     
     return render(request,"auctions/listing.html",{
-        "listing":listing, "comments":comments
+        "listing":listing, "comments":comments, "existing":existing
     })
 
 @login_required
@@ -133,16 +139,28 @@ def addToWatchlist(request,id):
         user = request.user
 
         if user.watchlist.filter(watched=listing).exists():
-            
+            existing = True
             comments = range(100)
             return render(request, "auctions/listing.html",{
-                "listing":listing, "comments":comments, "message":"Already on your watchlist"
+                "listing":listing, "comments":comments, "existing":existing
             }) 
 
         watchlist = Watchlist(watcher=user, watched=listing)
         watchlist.save()
         return HttpResponseRedirect(reverse("listing",args=[listing.id]))
 
-    return HttpResponseRedirect(reverse("index"))
+    return HttpResponseRedirect(reverse("listing",args=[listing.id]))
+
+
+@login_required
+def removeFromWatchlist(request,id):
+    listing = Listing.objects.get(id=id)
+    user = request.user
+
+    if request.method == "POST":
+        user.watchlist.filter(watched=listing).delete()
+        return HttpResponseRedirect(reverse("listing",args=[listing.id]))
+            
+    return HttpResponseRedirect(reverse("listing",args=[listing.id]))   
     
 
