@@ -117,9 +117,9 @@ def createListing(request):
     })
 
 
-def listing(request,title):
+def listing(request,id):
     
-    listing = Listing.objects.get(title=title)
+    listing = Listing.objects.get(id=id)
     comments = range(100)
     
     return render(request,"auctions/listing.html",{
@@ -127,14 +127,21 @@ def listing(request,title):
     })
 
 @login_required
-def addToWatchlist(request,title):
+def addToWatchlist(request,id):
     if request.method == "POST":
-        listing_id = request.POST["add"]
-        listing = Listing.objects.get(id=listing_id)
+        listing = Listing.objects.get(id=id)
         user = request.user
+
+        if user.watchlist.filter(watched=listing).exists():
+            
+            comments = range(100)
+            return render(request, "auctions/listing.html",{
+                "listing":listing, "comments":comments, "message":"Already on your watchlist"
+            }) 
+
         watchlist = Watchlist(watcher=user, watched=listing)
         watchlist.save()
-        return HttpResponseRedirect(reverse("listing",args=[listing.title]))
+        return HttpResponseRedirect(reverse("listing",args=[listing.id]))
 
     return HttpResponseRedirect(reverse("index"))
     
