@@ -5,6 +5,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django import forms
+from django.db.models import Max
 
 from .models import User, Listing, Bid, Comment, Watchlist
 
@@ -122,15 +123,26 @@ def listing(request,id):
     listing = Listing.objects.get(id=id)
     comments = range(100)
     existing = None
+    low_offer = None
 
-    if request.user:
+    if request.user.is_authenticated:
         user = request.user
         if user.watchlist.filter(watched=listing).exists():
             existing = True
     
+    if request.method == "POST":
+        offer = float(request.POST["offer"])
+        if offer <= listing.currentBid or offer <= listing.startingPrice:
+            low_offer = True
+        else:
+            listing.currentBid = offer
+            bid = Bid(bidder=user, listing=listing, value=offer)
+     
+        
     return render(request,"auctions/listing.html",{
-        "listing":listing, "comments":comments, "existing":existing
+        "listing":listing, "comments":comments, "existing":existing, "low_offer":low_offer 
     })
+
 
 @login_required
 def addToWatchlist(request,id):
@@ -139,11 +151,7 @@ def addToWatchlist(request,id):
         user = request.user
 
         if user.watchlist.filter(watched=listing).exists():
-            existing = True
-            comments = range(100)
-            return render(request, "auctions/listing.html",{
-                "listing":listing, "comments":comments, "existing":existing
-            }) 
+            return HttpResponseRedirect(reverse("listing",args=[listing.id])) 
 
         watchlist = Watchlist(watcher=user, watched=listing)
         watchlist.save()
@@ -161,6 +169,9 @@ def removeFromWatchlist(request,id):
         user.watchlist.filter(watched=listing).delete()
         return HttpResponseRedirect(reverse("listing",args=[listing.id]))
             
-    return HttpResponseRedirect(reverse("listing",args=[listing.id]))   
+    return HttpResponseRedirect(reverse("listing",args=[listing.id]))
+
+
+    
     
 

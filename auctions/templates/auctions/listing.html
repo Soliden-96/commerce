@@ -21,8 +21,9 @@
                                     Current Price: {{ listing.currentBid }}$
                                 {% endif %}   
                             </div>
+                            {% if request.user.is_authenticated %}
                             <div>
-                                <form action="placeBid"  method="post">
+                                <form action="listing"  method="post">
                                     {% csrf_token %}
                                     <div>
                                         <input type="number" name="offer" step="0.01" min="0">
@@ -31,7 +32,10 @@
                                         <button type="submit">Place Bid</button>
                                     </div>
                                 </form>
-                            </div>      
+                            </div>
+                            {% if low_offer %}
+                            <div class="mt-2">Offer is too low</div>
+                            {% endif %}      
                             {% if existing %}
                             <div class="mt-2">
                                 <form action="{% url 'removeFromWatchlist' listing.id %}" method="post">
@@ -45,6 +49,11 @@
                                     {% csrf_token %}
                                     <button type="submit">Add to Watchlist</button>
                                 </form>
+                            </div>
+                            {% endif %}
+                            {% else %}
+                            <div class="mt-2">
+                                <a href="{% url 'login' %}">Login to place a bid</a>
                             </div>
                             {% endif %}
                         </div>
