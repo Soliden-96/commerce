@@ -14,9 +14,9 @@ class Listing(models.Model):
     category = models.CharField(max_length = 64)
     imageUrl = models.URLField()
     startingPrice = models.DecimalField(max_digits = 10, decimal_places = 2)
-    currentBid = models.DecimalField(max_digits = 10, decimal_places = 2, default = 0)
+    currentBid = models.DecimalField(max_digits = 10, decimal_places = 2)
     active = models.BooleanField()
-    seller = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "listings", null = True)
+    seller = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "listings")
 
     def __str__(self):
         return f"{self.title} by {self.artist} listed by {self.seller}"
@@ -40,8 +40,8 @@ class Comment(models.Model):
         return f"Comment posted by {self.commenter} for {self.listing}"
 
 class Watchlist(models.Model):
-    watcher = models.ForeignKey(User, on_delete = models.CASCADE,  related_name = "watchlist",null=True)
-    watched = models.ForeignKey(Listing, on_delete = models.CASCADE, related_name = "watchedBy",null=True)
+    watcher = models.ForeignKey(User, on_delete = models.CASCADE,  related_name = "watchlist")
+    watched = models.ForeignKey(Listing, on_delete = models.CASCADE, related_name = "watchedBy")
 
     def __str__(self):
         return f"{self.watcher} has {self.watched} on his watchlist"

@@ -129,15 +129,8 @@ def listing(request,id):
         user = request.user
         if user.watchlist.filter(watched=listing).exists():
             existing = True
+   
     
-    if request.method == "POST":
-        offer = float(request.POST["offer"])
-        if offer <= listing.currentBid or offer <= listing.startingPrice:
-            low_offer = True
-        else:
-            listing.currentBid = offer
-            bid = Bid(bidder=user, listing=listing, value=offer)
-     
         
     return render(request,"auctions/listing.html",{
         "listing":listing, "comments":comments, "existing":existing, "low_offer":low_offer 
@@ -170,6 +163,32 @@ def removeFromWatchlist(request,id):
         return HttpResponseRedirect(reverse("listing",args=[listing.id]))
             
     return HttpResponseRedirect(reverse("listing",args=[listing.id]))
+
+
+@login_required
+def placeBid(request,id):
+    user = request.user
+    listing = Listing.objects.get(id=id)
+
+    if request.method == "POST":
+        offer = float(request.POST["offer"])
+        low_offer = offer <= listing.currentBid or offer <= listing.startingPrice
+        if not low_offer:
+            listing.currentBid = offer
+            listing.save()
+            bid = Bid(bidder=user,listing=listing,value=offer)
+            bid.save()
+
+        context={
+            "low_offer":low_offer,
+            "comments":range(100),
+            "existing":user.watchlist.filter(watched=listing).exists(),
+            "listing":listing
+        }        
+        return render(request,"auctions/listing.html",context)
+    
+    return HttpResponseRedirect(reverse("listing",args=[listing.id]))
+
 
 
     

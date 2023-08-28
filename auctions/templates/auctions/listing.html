@@ -23,7 +23,7 @@
                             </div>
                             {% if request.user.is_authenticated %}
                             <div>
-                                <form action="listing"  method="post">
+                                <form action="{% url 'placeBid' listing.id %}"  method="post">
                                     {% csrf_token %}
                                     <div>
                                         <input type="number" name="offer" step="0.01" min="0">
