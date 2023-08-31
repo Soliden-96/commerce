@@ -66,21 +66,23 @@
         <div class="col">
             <h4>Comment section</h4>
             <div class="overflow-auto" style="height:30vh;">
-                {% for i in comments %}
+                {% for comment in comments %}
                     <div>
-                        <h6>Comment by User {{ i }}</h6>
-                        <p>This is the content of comment {{ i }}...</p>
+                        <h6>Comment by {{ comment.commenter.username }}</h6>
+                        <p>{{ comment.content }}</p>
                     </div>
-                {% endfor %}            
-            </div>
-            <div class="mt-5">
-                <form action="comment" method="post">
+                {% endfor %}
+            </div>           
+            <div class="mt-3">
+                <form action="{% url 'comment' listing.id %}" method="post">
+                    {% csrf_token %}
                     <textarea name="comment" placeholder="Leave a comment" style="width:100%;"></textarea>
                     <div>
                         <button type="submit">Comment</button>
                     </div>
                 </form>
-            <div>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}

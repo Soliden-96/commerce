@@ -1,0 +1,26 @@
+{% extends "auctions/layout.html" %}
+
+{%block body %}
+<h2>Your watchlist:</h2>
+<div>
+    {% for listing in watchlist %}
+    <div>
+    <h4><a href="{% url 'listing' listing.watched.id %}">{{ listing.watched.title }} by {{ listing.watched.artist }}</a></h4>
+            <div>Genre: {{ listing.watched.category }}</div>
+            <div>Listed by {{ listing.watched.seller.username }}</div>
+            <div style="height:20vh; width:20vh;">
+                <img src="{{ listing.watched.imageUrl }}" alt="{{ listing.watched.title }} by {{ listing.watched.artist }}" style="width:20vh; height:20vh;" >
+            </div>
+            <div>{{ listing.watched.description }}</div>
+            <div>
+             {% if not listing.watched.currentBid %}
+             Starting Price : {{ listing.watched.startingPrice}}$
+             {% else %}
+             Current Price : {{ listing.watched.currentBid }}$
+             {% endif %}
+             </div>
+    </div>
+    <hr>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -127,13 +127,11 @@ def listing(request,id):
         user = request.user
     
     context = {
-        "comments":range(100),
+        "comments":Comment.objects.filter(listing=listing),
         "in_watchlist":user.watchlist.filter(watched=listing).exists(),
         "listing":listing
     }
-   
-    
-        
+           
     return render(request,"auctions/listing.html",context
     )
 
@@ -148,7 +146,7 @@ def addToWatchlist(request,id):
         watchlist.save()
         context = {
             "listing":listing,
-            "comments":range(100),
+            "comments":Comment.objects.filter(listing=listing),
             "in_watchlist":user.watchlist.filter(watched=listing).exists()
         }
         return render(request,"auctions/listing.html",context)
@@ -166,7 +164,7 @@ def removeFromWatchlist(request,id):
         context={
             "listing":listing,
             "in_watchlist":user.watchlist.filter(watched=listing).exists(),
-            "comments":range(100)
+            "comments":Comment.objects.filter(listing=listing)
         }
         return render(request,"auctions/listing.html",context)
             
@@ -189,13 +187,48 @@ def placeBid(request,id):
 
         context={
             "low_offer":low_offer,
-            "comments":range(100),
+            "comments":Comment.objects.filter(listing=listing),
             "in_watchlist":user.watchlist.filter(watched=listing).exists(),
             "listing":listing
         }        
         return render(request,"auctions/listing.html",context)
     
     return render(request,"auctions/listing.html",context)
+
+
+@login_required
+def comment(request,id):
+    listing = Listing.objects.get(id=id) 
+    user = request.user
+    if request.method == "POST":
+        content = request.POST["comment"]
+        comment = Comment(commenter=user, listing=listing, content=content)
+        comment.save()
+
+        context = {
+            "listing":listing,
+            "in_watchlist":user.watchlist.filter(watched=listing).exists(),
+            "comments":Comment.objects.filter(listing=listing),
+        }
+
+        return HttpResponseRedirect(reverse("listing",args=[listing.id]))
+
+    return HttpResponseRedirect(reverse("listing",args=[listing.id]))
+
+
+@login_required
+def watchlist(request):
+    user = request.user
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse("login"))
+    
+    watchlist = Watchlist.objects.filter(watcher=user)
+    return render(request,"auctions/watchlist.html",{
+        "watchlist":watchlist
+    })
+
+
+
 
 
 
