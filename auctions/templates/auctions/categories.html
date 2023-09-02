@@ -1,0 +1,44 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+<div>
+<h6>Filter by genre</h6>
+<form action="categories" method="post">
+    {% csrf_token %}
+    <select name="genre" onchange="this.form.submit();">
+        <option {% if not selected_genre %} selected {% endif %} value="all_genres">All genres</option>
+        {% for genre in genres %}
+        <option value="{{ genre }}" {% if selected_genre == genre %} selected {% endif %}>{{ genre }}</option>
+        {% endfor %}
+    </select>
+</form>
+</div>
+<hr>
+{% for listing in listings %}
+        <div>
+            <h4><a href="{% url 'listing' listing.id %}">{{ listing.title }} by {{ listing.artist }}</a></h4>
+            <div>Genre: {{ listing.category }}</div>
+            <div>Listed by {{ listing.seller.username }}</div>
+            <div style="height:20vh; width:20vh;">
+                <img src="{{ listing.imageUrl }}" alt="{{ listing.title }} by {{ listing.artist }}" style="width:20vh; height:20vh;" >
+            </div>
+            <div>{{ listing.description }}</div>
+            <div>
+             {% if not listing.currentBid %}
+             Starting Price : {{ listing.startingPrice}}$
+             {% else %}
+             Current Price : {{ listing.currentBid }}$
+             {% endif %}
+             </div>
+             <div>
+                <form action="placeBid" method="post">
+                    <input type="number" name="offer" step="0.01" min="0">
+                    <div>
+                        <button type="submit">Place Bid</button>
+                    </div>
+                </form>                
+             </div>
+        </div>
+        <hr>
+        {% endfor %}
+{% endblock %}

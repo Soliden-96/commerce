@@ -122,13 +122,16 @@ def listing(request,id):
     
     listing = Listing.objects.get(id=id)
     
-
     if request.user.is_authenticated:
         user = request.user
+        in_watchlist = user.watchlist.filter(watched=listing).exists()
+    else:
+        user = None
+        in_watchlist = False
     
     context = {
         "comments":Comment.objects.filter(listing=listing),
-        "in_watchlist":user.watchlist.filter(watched=listing).exists(),
+        "in_watchlist":in_watchlist,
         "listing":listing
     }
            
@@ -228,6 +231,33 @@ def watchlist(request):
     })
 
 
+def categories(request):
+    genres={
+        "Rock":"Rock",
+        "Pop": "Pop",
+        "Jazz": "Jazz",
+        "HipHop/RnB": "HipHop/RnB",
+        "Electronic/Dance": "Electronic/Dance"
+    }
+    listings = Listing.objects.all()
+
+    if request.method == "POST":
+        genre = request.POST["genre"]
+        if genre == "all_genres":
+            return HttpResponseRedirect(reverse("categories"))
+        
+        return render(request,"auctions/categories.html",{
+            "genres":genres, "listings":Listing.objects.filter(category=genre),"selected_genre":genre
+        })
+
+    return render(request,"auctions/categories.html",{
+        "genres":genres, "listings":listings
+    })
+
+
+def closeAuction(request,id):
+    listing = Listing.objects.get(id=id)
+    return HttpResponseRedirect(reverse('listing', args=[listing.id]))
 
 
 

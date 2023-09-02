@@ -51,6 +51,14 @@
                                 </form>
                             </div>
                             {% endif %}
+                            {% if request.user.is_authenticated and request.user == listing.seller %}
+                            <div class="mt-2">
+                                <form action="{% url 'closeAuction' listing.id %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit">Close auction</button>
+                                </form>
+                            </div>
+                            {% endif %}
                             {% else %}
                             <div class="mt-2">
                                 <a href="{% url 'login' %}">Login to place a bid</a>
