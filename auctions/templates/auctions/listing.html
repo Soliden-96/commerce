@@ -8,6 +8,23 @@
             <div>
                 <div>{{ listing.category }}</div>
                 <div>Listed by {{ listing.seller }}</div>
+
+                {% if not listing.active %}
+                    {% if request.user.is_authenticated and request.user == listing.winner %}
+                    <h6 style="color:green;">You have won the auction!!</h6>
+                    {% else %}
+                    <h6 style="color:red;">Auction is closed</h6>
+                    {% endif %}
+                    {% if in_watchlist %}
+                            <div class="mt-2">
+                                <form action="{% url 'removeFromWatchlist' listing.id %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit">Remove from Watchlist</button>
+                                </form>
+                            </div>
+                    {% endif %}
+
+                {% else %}
                 <div class="container mt-1">
                     <div class="row">
                         <div class="col" style="height:35vh; width:35vh;">
@@ -35,7 +52,7 @@
                             </div>
                             {% if low_offer %}
                             <div class="mt-2">Offer is too low</div>
-                            {% endif %}      
+                            {% endif %}   
                             {% if in_watchlist %}
                             <div class="mt-2">
                                 <form action="{% url 'removeFromWatchlist' listing.id %}" method="post">
@@ -67,7 +84,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="mt-1">{{ listing.description}}</div>         
+                {% endif %}
+                <div class="mt-1">{{ listing.description}}</div>
             </div>
         </div>
     
@@ -76,7 +94,7 @@
             <div class="overflow-auto" style="height:30vh;">
                 {% for comment in comments %}
                     <div>
-                        <h6>Comment by {{ comment.commenter.username }}</h6>
+                        <h6>{{ comment.commenter.username }} {{ comment.date|date:"d/m/Y H:i:s" }}</h6>
                         <p>{{ comment.content }}</p>
                     </div>
                 {% endfor %}

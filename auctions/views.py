@@ -6,6 +6,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django import forms
 from django.db.models import Max
+import datetime
 
 from .models import User, Listing, Bid, Comment, Watchlist
 
@@ -130,7 +131,7 @@ def listing(request,id):
         in_watchlist = False
     
     context = {
-        "comments":Comment.objects.filter(listing=listing),
+        "comments":Comment.objects.filter(listing=listing).order_by('-date'),
         "in_watchlist":in_watchlist,
         "listing":listing
     }
@@ -149,7 +150,7 @@ def addToWatchlist(request,id):
         watchlist.save()
         context = {
             "listing":listing,
-            "comments":Comment.objects.filter(listing=listing),
+            "comments":Comment.objects.filter(listing=listing).order_by('-date'),
             "in_watchlist":user.watchlist.filter(watched=listing).exists()
         }
         return render(request,"auctions/listing.html",context)
@@ -167,7 +168,7 @@ def removeFromWatchlist(request,id):
         context={
             "listing":listing,
             "in_watchlist":user.watchlist.filter(watched=listing).exists(),
-            "comments":Comment.objects.filter(listing=listing)
+            "comments":Comment.objects.filter(listing=listing).order_by('-date')
         }
         return render(request,"auctions/listing.html",context)
             
@@ -190,7 +191,7 @@ def placeBid(request,id):
 
         context={
             "low_offer":low_offer,
-            "comments":Comment.objects.filter(listing=listing),
+            "comments":Comment.objects.filter(listing=listing).order_by('-date'),
             "in_watchlist":user.watchlist.filter(watched=listing).exists(),
             "listing":listing
         }        
@@ -205,13 +206,13 @@ def comment(request,id):
     user = request.user
     if request.method == "POST":
         content = request.POST["comment"]
-        comment = Comment(commenter=user, listing=listing, content=content)
+        comment = Comment(commenter=user, listing=listing, content=content, date=datetime.datetime.now())
         comment.save()
 
         context = {
             "listing":listing,
             "in_watchlist":user.watchlist.filter(watched=listing).exists(),
-            "comments":Comment.objects.filter(listing=listing),
+            "comments":Comment.objects.filter(listing=listing).order_by('-date')
         }
 
         return HttpResponseRedirect(reverse("listing",args=[listing.id]))
@@ -255,8 +256,17 @@ def categories(request):
     })
 
 
+@login_required
 def closeAuction(request,id):
     listing = Listing.objects.get(id=id)
+    
+    if request.method == "POST":
+        listing.active = False
+        highest_bid = listing.offers.order_by('-value').first()
+        listing.winner = highest_bid.bidder
+        listing.save()
+        return HttpResponseRedirect(reverse('listing',args=[listing.id]))
+    
     return HttpResponseRedirect(reverse('listing', args=[listing.id]))
 
 
