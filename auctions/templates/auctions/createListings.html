@@ -5,9 +5,33 @@
 <div>
     <form action="createListing" method="post">
         {% csrf_token %}
-        {% for field in form %}
-           <div>{{ field }}</div>
-        {% endfor %}
+        <div class="row mb-3">
+              <div class="col-auto">
+                {{ form.title }}
+              </div>
+              <div class="col-auto">
+                {{ form.artist }}
+              </div>
+              <div class="col-auto">
+                {{ form.category }}
+                </div>
+        </div>
+        <div class="row mb-3">
+              <div class="col-auto">
+                {{ form.description }}
+              </div>         
+        </div>
+        <div class="row mb-3">
+            <div class="col-auto">
+            {{ form.startingPrice }}
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-auto">
+            {{ form.imageUrl }}
+            </div>
+        </div>
+        </div>
         <div>
             <input type="submit" value="Create Listing">
         </div>
