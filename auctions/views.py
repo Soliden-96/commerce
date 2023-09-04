@@ -182,7 +182,10 @@ def placeBid(request,id):
 
     if request.method == "POST":
         offer = float(request.POST["offer"])
-        low_offer = offer <= listing.currentBid or offer <= listing.startingPrice
+        if listing.currentBid:
+            low_offer = offer <= listing.currentBid 
+        else:
+            low_offer = offer <= listing.startingPrice
         if not low_offer:
             listing.currentBid = offer
             listing.save()
