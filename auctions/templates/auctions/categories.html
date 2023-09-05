@@ -14,9 +14,10 @@
 </form>
 </div>
 <hr>
+<div class="d-flex flex-wrap">
 {% for listing in listings %}
-        <div>
-            <h4><a href="{% url 'listing' listing.id %}">{{ listing.title }} by {{ listing.artist }}</a></h4>
+        <div class="card d-inline-flex p-2 mr-4 mb-2" style="max-width:200px;">
+            <h4><a href="{% url 'listing' listing.id %}"><div>{{ listing.title }}</div><div>{{ listing.artist }}</div></a></h4>
             <div>Genre: {{ listing.category }}</div>
             <div>Listed by {{ listing.seller.username }}</div>
             <div style="height:20vh; width:20vh;">
@@ -30,15 +31,7 @@
              Current Price : {{ listing.currentBid }}$
              {% endif %}
              </div>
-             <div>
-                <form action="placeBid" method="post">
-                    <input type="number" name="offer" step="0.01" min="0">
-                    <div>
-                        <button type="submit">Place Bid</button>
-                    </div>
-                </form>                
-             </div>
         </div>
-        <hr>
-        {% endfor %}
+{% endfor %}
+</div>
 {% endblock %}

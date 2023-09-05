@@ -243,7 +243,7 @@ def categories(request):
         "HipHop/RnB": "HipHop/RnB",
         "Electronic/Dance": "Electronic/Dance"
     }
-    listings = Listing.objects.all()
+    listings = Listing.objects.filter(active=True)
 
     if request.method == "POST":
         genre = request.POST["genre"]
@@ -251,7 +251,7 @@ def categories(request):
             return HttpResponseRedirect(reverse("categories"))
         
         return render(request,"auctions/categories.html",{
-            "genres":genres, "listings":Listing.objects.filter(category=genre),"selected_genre":genre
+            "genres":genres, "listings":Listing.objects.filter(category=genre, active=True),"selected_genre":genre
         })
 
     return render(request,"auctions/categories.html",{

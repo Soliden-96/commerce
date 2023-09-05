@@ -2,10 +2,10 @@
 
 {%block body %}
 <h2>Your watchlist:</h2>
-<div>
+<div class="d-flex flex-wrap">
     {% for listing in watchlist %}
-    <div>
-    <h4><a href="{% url 'listing' listing.watched.id %}">{{ listing.watched.title }} by {{ listing.watched.artist }}</a></h4>
+    <div class="card d-inline-flex p-2 mr-4 mb-2" style="max-width:200px;">
+    <h4><a href="{% url 'listing' listing.watched.id %}"><div>{{ listing.watched.title }}</div><div>{{ listing.watched.artist }}</div></a></h4>
             <div>Genre: {{ listing.watched.category }}</div>
             <div>Listed by {{ listing.watched.seller.username }}</div>
             <div style="height:20vh; width:20vh;">
